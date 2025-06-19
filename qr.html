@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DR KAMRAN MD | Futuristic QR Scanner</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Base Styles */
+        :root {
+            --primary: #6e00ff;
+            --primary-dark: #4d00b5;
+            --primary-light: #9e4dff;
+            --secondary: #00f7ff;
+            --dark: #0a0a14;
+            --light: #f0f0ff;
+            --glass: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --error: #ff3860;
+            --success: #2ecc71;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', 'Roboto', sans-serif;
+            background: var(--dark);
+            color: var(--light);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        /* Background Elements */
+        body::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at center, var(--primary) 0%, transparent 70%);
+            opacity: 0.1;
+            animation: rotate 60s linear infinite;
+            z-index: -2;
+        }
+        
+        body::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(10, 10, 20, 0.9) 0%, rgba(30, 5, 60, 0.95) 100%);
+            z-index: -1;
+        }
+        
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Floating Particles */
+        .particle {
+            position: absolute;
+            background: var(--secondary);
+            border-radius: 50%;
+            opacity: 0.3;
+            animation: float linear infinite;
+            z-index: -1;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0) translateX(0); opacity: 0.3; }
+            50% { transform: translateY(-100px) translateX(50px); opacity: 0.6; }
+            100% { transform: translateY(0) translateX(0); opacity: 0.3; }
+        }
+        
+        /* Main Container */
+        .container {
+            width: 100%;
+            max-width: 480px;
+            padding: 2rem;
+            perspective: 1000px;
+        }
+        
+        /* Glass Panel */
+        .panel {
+            background: var(--glass);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 24px;
+            border: 1px solid var(--glass-border);
+            padding: 2.5rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            transform-style: preserve-3d;
+            transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+        }
+        
+        .panel::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                to bottom right,
+                rgba(110, 0, 255, 0.1) 0%,
+                rgba(0, 247, 255, 0.05) 50%,
+                rgba(110, 0, 255, 0.1) 100%
+            );
+            transform: rotate(30deg);
+            z-index: -1;
+        }
+        
+        .panel:hover {
+            transform: translateY(-5px) rotateX(5deg);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+        }
+        
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+        
+        .header h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .header h1::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 3px;
+        }
+        
+        .header p {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 1rem;
+        }
+        
+        /* QR Code Container */
+        .qr-container {
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            border: 1px solid var(--glass-border);
+            margin-bottom: 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .qr-container::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                to bottom right,
+                transparent 45%,
+                rgba(255, 255, 255, 0.1) 50%,
+                transparent 55%
+            );
+            transform: rotate(30deg);
+            animation: hologram 3s linear infinite;
+            z-index: 0;
+        }
+        
+        .qr-image {
+            width: 100%;
+            max-width: 300px;
+            height: auto;
+            border-radius: 8px;
+            position: relative;
+            z-index: 1;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* Progress Bar */
+        .progress-container {
+            width: 100%;
+            margin: 1.5rem 0;
+        }
+        
+        progress {
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+            background: rgba(0, 0, 0, 0.2);
+            border: none;
+            overflow: hidden;
+        }
+        
+        progress::-webkit-progress-bar {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 4px;
+        }
+        
+        progress::-webkit-progress-value {
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 4px;
+            transition: width 1s linear;
+        }
+        
+        progress::-moz-progress-bar {
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 4px;
+        }
+        
+        .time-remaining {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.6);
+            margin-top: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        /* Status Message */
+        .status-message {
+            margin: 1rem 0;
+            padding: 0.8rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        
+        .status-message.scanning {
+            background: rgba(0, 247, 255, 0.1);
+            border: 1px solid var(--secondary);
+            color: var(--secondary);
+        }
+        
+        .status-message.expired {
+            background: rgba(255, 56, 96, 0.1);
+            border: 1px solid var(--error);
+            color: var(--error);
+            display: none;
+        }
+        
+        .status-message.success {
+            background: rgba(46, 204, 113, 0.1);
+            border: 1px solid var(--success);
+            color: var(--success);
+            display: none;
+        }
+        
+        /* Reload Button */
+        .reload-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.8rem 1.5rem;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(110, 0, 255, 0.3);
+            text-decoration: none;
+            margin-top: 1rem;
+        }
+        
+        .reload-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(110, 0, 255, 0.4);
+        }
+        
+        .reload-button:active {
+            transform: translateY(0);
+        }
+        
+        .reload-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+        
+        .reload-button:hover::before {
+            left: 100%;
+        }
+        
+        /* Holographic Animation */
+        @keyframes hologram {
+            0% { transform: translateY(-100%) rotate(30deg); }
+            100% { transform: translateY(100%) rotate(30deg); }
+        }
+        
+        /* Glow Animation */
+        .glow {
+            animation: glow-pulse 2s infinite alternate;
+        }
+        
+        @keyframes glow-pulse {
+            from { text-shadow: 0 0 10px var(--primary-light), 0 0 20px var(--primary-light); }
+            to { text-shadow: 0 0 15px var(--primary-light), 0 0 30px var(--primary-light), 0 0 40px var(--primary); }
+        }
+        
+        /* Responsive Adjustments */
+        @media (max-width: 480px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .panel {
+                padding: 1.5rem;
+            }
+            
+            .header h1 {
+                font-size: 1.5rem;
+            }
+            
+            .qr-image {
+                max-width: 250px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="panel">
+            <div class="header">
+                <h1 class="glow">DR KAMRAN MD</h1>
+                <p>Scan QR Code to connect WhatsApp</p>
+            </div>
+            
+            <div class="qr-container">
+                <img id="qr-image" class="qr-image" src="/server" alt="WhatsApp QR Code">
+            </div>
+            
+            <div class="status-message scanning">
+                <i class="fas fa-qrcode"></i>
+                <span>Scan the QR code with your WhatsApp mobile app</span>
+            </div>
+            
+            <div class="status-message expired">
+                <i class="fas fa-exclamation-circle"></i>
+                <span>QR Code expired! Please reload</span>
+            </div>
+            
+            <div class="status-message success">
+                <i class="fas fa-check-circle"></i>
+                <span>Successfully connected!</span>
+            </div>
+            
+            <div class="progress-container">
+                <progress id="progressBar" value="30" max="30"></progress>
+                <div class="time-remaining">
+                    <span>Time remaining:</span>
+                    <span id="time-count">30s</span>
+                </div>
+            </div>
+            
+            <a href="javascript:history.go(0)" class="reload-button">
+                <i class="fas fa-sync-alt"></i>
+                <span>Reload QR Code</span>
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Create floating particles
+        function createParticles() {
+            const particles = 15;
+            for (let i = 0; i < particles; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                // Random size between 2px and 6px
+                const size = Math.random() * 4 + 2;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                
+                // Random position
+                particle.style.left = `${Math.random() * 100}vw`;
+                particle.style.top = `${Math.random() * 100}vh`;
+                
+                // Random animation duration
+                const duration = Math.random() * 20 + 10;
+                particle.style.animationDuration = `${duration}s`;
+                
+                // Random delay
+                particle.style.animationDelay = `${Math.random() * 5}s`;
+                
+                document.body.appendChild(particle);
+            }
+        }
+        
+        // Initialize elements
+        const progressBar = document.getElementById('progressBar');
+        const timeCount = document.getElementById('time-count');
+        const scanningMessage = document.querySelector('.status-message.scanning');
+        const expiredMessage = document.querySelector('.status-message.expired');
+        const successMessage = document.querySelector('.status-message.success');
+        
+        // Create particles on load
+        window.addEventListener('load', createParticles);
+        
+        // Timer functionality
+        let timeleft = 30;
+        let timerInterval;
+        
+        function startTimer() {
+            clearInterval(timerInterval);
+            timeleft = 30;
+            progressBar.value = 30;
+            timeCount.textContent = '30s';
+            scanningMessage.style.display = 'flex';
+            expiredMessage.style.display = 'none';
+            successMessage.style.display = 'none';
+            
+            timerInterval = setInterval(function() {
+                timeleft--;
+                progressBar.value = timeleft;
+                timeCount.textContent = `${timeleft}s`;
+                
+                if (timeleft <= 10) {
+                    progressBar.classList.add('warning');
+                }
+                
+                if (timeleft <= 0) {
+                    clearInterval(timerInterval);
+                    scanningMessage.style.display = 'none';
+                    expiredMessage.style.display = 'flex';
+                    
+                    // Add shake animation
+                    document.querySelector('.qr-container').style.animation = 'shake 0.5s';
+                    setTimeout(() => {
+                        document.querySelector('.qr-container').style.animation = '';
+                    }, 500);
+                }
+            }, 1000);
+        }
+        
+        // Start timer on load
+        startTimer();
+        
+        // Simulate successful connection (for demo purposes)
+        // In a real implementation, this would be triggered by a WebSocket or API response
+        function simulateSuccess() {
+            clearInterval(timerInterval);
+            scanningMessage.style.display = 'none';
+            expiredMessage.style.display = 'none';
+            successMessage.style.display = 'flex';
+            
+            // Add pulse animation to success message
+            successMessage.style.animation = 'pulse 2s infinite';
+        }
+        
+        // Add shake animation dynamically
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes shake {
+                0%, 100% { transform: translateX(0); }
+                20%, 60% { transform: translateX(-5px); }
+                40%, 80% { transform: translateX(5px); }
+            }
+            
+            @keyframes pulse {
+                0% { transform: scale(1); }
+                50% { transform: scale(1.02); }
+                100% { transform: scale(1); }
+            }
+            
+            progress.warning::-webkit-progress-value {
+                background: linear-gradient(90deg, var(--primary), var(--error));
+            }
+            
+            progress.warning::-moz-progress-bar {
+                background: linear-gradient(90deg, var(--primary), var(--error));
+            }
+        `;
+        document.head.appendChild(style);
+        
+        // For demo purposes - simulate success after 15 seconds
+        // setTimeout(simulateSuccess, 15000);
+    </script>
+</body>
+</html>

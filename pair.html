@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QUEEN ANJU XPRO | Futuristic Pairing</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* Base Styles */
+    :root {
+      --primary: #6e00ff;
+      --primary-dark: #4d00b5;
+      --primary-light: #9e4dff;
+      --secondary: #00f7ff;
+      --dark: #0a0a14;
+      --light: #f0f0ff;
+      --glass: rgba(255, 255, 255, 0.05);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --error: #ff3860;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Segoe UI', 'Roboto', sans-serif;
+      background: var(--dark);
+      color: var(--light);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      overflow: hidden;
+      position: relative;
+    }
+    
+    /* Background Elements */
+    body::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle at center, var(--primary) 0%, transparent 70%);
+      opacity: 0.1;
+      animation: rotate 60s linear infinite;
+      z-index: -2;
+    }
+    
+    body::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(10, 10, 20, 0.9) 0%, rgba(30, 5, 60, 0.95) 100%);
+      z-index: -1;
+    }
+    
+    @keyframes rotate {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    /* Floating Particles */
+    .particle {
+      position: absolute;
+      background: var(--secondary);
+      border-radius: 50%;
+      opacity: 0.3;
+      animation: float linear infinite;
+      z-index: -1;
+    }
+    
+    @keyframes float {
+      0% { transform: translateY(0) translateX(0); opacity: 0.3; }
+      50% { transform: translateY(-100px) translateX(50px); opacity: 0.6; }
+      100% { transform: translateY(0) translateX(0); opacity: 0.3; }
+    }
+    
+    /* Main Container */
+    .container {
+      width: 100%;
+      max-width: 480px;
+      padding: 2rem;
+      perspective: 1000px;
+    }
+    
+    /* Glass Panel */
+    .panel {
+      background: var(--glass);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: 24px;
+      border: 1px solid var(--glass-border);
+      padding: 2.5rem;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      transform-style: preserve-3d;
+      transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .panel::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(
+        to bottom right,
+        rgba(110, 0, 255, 0.1) 0%,
+        rgba(0, 247, 255, 0.05) 50%,
+        rgba(110, 0, 255, 0.1) 100%
+      );
+      transform: rotate(30deg);
+      z-index: -1;
+    }
+    
+    .panel:hover {
+      transform: translateY(-5px) rotateX(5deg);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+    }
+    
+    /* Header */
+    .header {
+      text-align: center;
+      margin-bottom: 2rem;
+      position: relative;
+    }
+    
+    .header h1 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      position: relative;
+      display: inline-block;
+    }
+    
+    .header h1::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 3px;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      border-radius: 3px;
+    }
+    
+    .header p {
+      font-size: 0.9rem;
+      color: rgba(255, 255, 255, 0.7);
+      margin-top: 1rem;
+    }
+    
+    /* Input Group */
+    .input-group {
+      position: relative;
+      margin-bottom: 1.5rem;
+    }
+    
+    .input-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 0.9rem;
+      color: rgba(255, 255, 255, 0.8);
+    }
+    
+    .input-field {
+      width: 100%;
+      padding: 1rem 1.5rem;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      color: white;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    .input-field:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(110, 0, 255, 0.3);
+    }
+    
+    .input-field::placeholder {
+      color: rgba(255, 255, 255, 0.4);
+    }
+    
+    /* Submit Button */
+    .submit-btn {
+      width: 100%;
+      padding: 1rem;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(110, 0, 255, 0.3);
+    }
+    
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(110, 0, 255, 0.4);
+    }
+    
+    .submit-btn:active {
+      transform: translateY(0);
+    }
+    
+    .submit-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: 0.5s;
+    }
+    
+    .submit-btn:hover::before {
+      left: 100%;
+    }
+    
+    /* Result Container */
+    .result-container {
+      margin-top: 1.5rem;
+      padding: 1.5rem;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      display: none;
+      animation: fadeIn 0.5s ease-out;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .result-title {
+      font-size: 1rem;
+      color: var(--secondary);
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .result-code {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: white;
+      background: rgba(0, 0, 0, 0.3);
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      display: inline-block;
+      margin: 0.5rem 0;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .copy-btn {
+      background: linear-gradient(135deg, var(--primary-light), var(--primary));
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+    
+    .copy-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(110, 0, 255, 0.3);
+    }
+    
+    /* Status Message */
+    .status-message {
+      margin-top: 1rem;
+      padding: 0.8rem;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      display: none;
+      align-items: center;
+      gap: 0.5rem;
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0% { opacity: 0.8; }
+      50% { opacity: 1; }
+      100% { opacity: 0.8; }
+    }
+    
+    .status-message.processing {
+      background: rgba(0, 247, 255, 0.1);
+      border: 1px solid var(--secondary);
+      color: var(--secondary);
+      display: flex;
+    }
+    
+    .status-message.error {
+      background: rgba(255, 56, 96, 0.1);
+      border: 1px solid var(--error);
+      color: var(--error);
+      display: flex;
+    }
+    
+    /* Loading Animation */
+    .loading {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .loading-dots {
+      display: flex;
+      gap: 0.3rem;
+    }
+    
+    .loading-dot {
+      width: 6px;
+      height: 6px;
+      background: currentColor;
+      border-radius: 50%;
+      animation: bounce 1.4s infinite ease-in-out;
+    }
+    
+    .loading-dot:nth-child(1) {
+      animation-delay: -0.32s;
+    }
+    
+    .loading-dot:nth-child(2) {
+      animation-delay: -0.16s;
+    }
+    
+    @keyframes bounce {
+      0%, 80%, 100% { transform: translateY(0); }
+      40% { transform: translateY(-6px); }
+    }
+    
+    /* Responsive Adjustments */
+    @media (max-width: 480px) {
+      .container {
+        padding: 1rem;
+      }
+      
+      .panel {
+        padding: 1.5rem;
+      }
+      
+      .header h1 {
+        font-size: 1.5rem;
+      }
+    }
+    
+    /* Special Effects */
+    .glow {
+      text-shadow: 0 0 10px var(--primary-light), 0 0 20px var(--primary-light);
+      animation: glow-pulse 2s infinite alternate;
+    }
+    
+    @keyframes glow-pulse {
+      from { text-shadow: 0 0 10px var(--primary-light), 0 0 20px var(--primary-light); }
+      to { text-shadow: 0 0 15px var(--primary-light), 0 0 30px var(--primary-light), 0 0 40px var(--primary); }
+    }
+    
+    .holographic {
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .holographic::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(
+        to bottom right,
+        transparent 45%,
+        rgba(255, 255, 255, 0.1) 50%,
+        transparent 55%
+      );
+      transform: rotate(30deg);
+      animation: hologram 3s linear infinite;
+    }
+    
+    @keyframes hologram {
+      0% { transform: translateY(-100%) rotate(30deg); }
+      100% { transform: translateY(100%) rotate(30deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="panel">
+      <div class="header">
+        <h1 class="glow">DR KAMRAN MD</h1>
+        <p>Pair your device with WhatsApp using your phone number</p>
+      </div>
+      
+      <div class="input-group">
+        <label for="number">Enter your WhatsApp number with country code</label>
+        <input type="text" id="number" class="input-field" placeholder="+923147168309" inputmode="numeric">
+      </div>
+      
+      <button id="submit" class="submit-btn">
+        <i class="fas fa-link"></i> Generate Pairing Code
+      </button>
+      
+      <div id="status-message" class="status-message">
+        <i class="fas fa-circle-notch fa-spin"></i>
+        <span class="message-text">Processing your request</span>
+      </div>
+      
+      <div id="result-container" class="result-container">
+        <div class="result-title">
+          <i class="fas fa-key"></i>
+          <span>Your Pairing Code</span>
+        </div>
+        <div class="result-code" id="pair-code">XXXXXX</div>
+        <button id="copy-btn" class="copy-btn">
+          <i class="far fa-copy"></i>
+          <span>Copy Code</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.0.0-alpha.1/axios.min.js"></script>
+  <script>
+    // Create floating particles
+    function createParticles() {
+      const particles = 15;
+      for (let i = 0; i < particles; i++) {
+        const particle = document.createElement('div');
+        particle.classList.add('particle');
+        
+        // Random size between 2px and 6px
+        const size = Math.random() * 4 + 2;
+        particle.style.width = `${size}px`;
+        particle.style.height = `${size}px`;
+        
+        // Random position
+        particle.style.left = `${Math.random() * 100}vw`;
+        particle.style.top = `${Math.random() * 100}vh`;
+        
+        // Random animation duration
+        const duration = Math.random() * 20 + 10;
+        particle.style.animationDuration = `${duration}s`;
+        
+        // Random delay
+        particle.style.animationDelay = `${Math.random() * 5}s`;
+        
+        document.body.appendChild(particle);
+      }
+    }
+    
+    // Initialize elements
+    const numberInput = document.getElementById('number');
+    const submitBtn = document.getElementById('submit');
+    const statusMessage = document.getElementById('status-message');
+    const resultContainer = document.getElementById('result-container');
+    const pairCode = document.getElementById('pair-code');
+    const copyBtn = document.getElementById('copy-btn');
+    
+    // Create particles on load
+    window.addEventListener('load', createParticles);
+    
+    // Format phone number as user types
+    numberInput.addEventListener('input', function(e) {
+      let value = this.value.replace(/\D/g, '');
+      
+      if (value.length > 0) {
+        value = '+' + value;
+      }
+      
+      this.value = value;
+    });
+    
+    // Copy code to clipboard
+    copyBtn.addEventListener('click', async function() {
+      try {
+        await navigator.clipboard.writeText(pairCode.textContent);
+        copyBtn.innerHTML = '<i class="fas fa-check"></i> <span>Copied!</span>';
+        copyBtn.style.background = 'linear-gradient(135deg, #4CAF50, #2E7D32)';
+        
+        setTimeout(() => {
+          copyBtn.innerHTML = '<i class="far fa-copy"></i> <span>Copy Code</span>';
+          copyBtn.style.background = 'linear-gradient(135deg, var(--primary-light), var(--primary))';
+        }, 2000);
+      } catch (err) {
+        console.error('Failed to copy: ', err);
+      }
+    });
+    
+// Submit form with the exact functionality from the second version but using futuristic UI elements
+submitBtn.addEventListener('click', async function(e) {
+    e.preventDefault();
+    
+    if (!numberInput.value) {
+        // Using showError function but with the exact message from the second version
+        showError('❗ Enter your WhatsApp number with country code.');
+        return;
+    } else if (numberInput.value.replace(/[^0-9]/g, "").length < 11) {
+        showError('❌ Invalid number format ❌');
+        return;
+    } else {
+        const phoneDigits = numberInput.value.replace(/[^0-9]/g, "");
+        let formattedNumber = "";
+        let temp = "";
+        const digits = phoneDigits.split('');
+        
+        // Format the number with spaces
+        digits.map(d => {
+            temp += d;
+            if (temp.length == 3) {
+                formattedNumber += " " + d;
+            } else if (temp.length == 8) {
+                formattedNumber += " " + d;
+            } else {
+                formattedNumber += d;
+            }
+        });
+        
+        // Update input field with formatted number
+        numberInput.type = "text";
+        numberInput.value = "+" + formattedNumber;
+        numberInput.style.color = "#333";
+        numberInput.style.fontSize = "16px";
+        
+        // Show "Please wait" message using futuristic UI
+        resultContainer.style.display = 'none';
+        statusMessage.className = 'status-message processing';
+        statusMessage.innerHTML = `
+            <div class="loading">
+                <i class="fas fa-circle-notch fa-spin"></i>
+                <span class="message-text">Please wait 🔎</span>
+                <div class="loading-dots">
+                    <div class="loading-dot"></div>
+                    <div class="loading-dot"></div>
+                    <div class="loading-dot"></div>
+                </div>
+            </div>
+        `;
+        statusMessage.style.display = 'flex';
+        
+        try {
+            // Make the exact same API call
+            let { data } = await axios(`/code?number=${phoneDigits}`);
+            let code = data.code || "Service Unavailable";
+            
+            // Show result with the same format but using futuristic UI
+            resultContainer.style.display = 'block';
+            statusMessage.style.display = 'none';
+            pairCode.textContent = code;
+            
+            // Set up copy functionality
+            copyBtn.onclick = async function() {
+                try {
+                    await navigator.clipboard.writeText(code);
+                    copyBtn.innerHTML = '<i class="fas fa-check"></i> <span>Copied!</span>';
+                    copyBtn.style.background = 'linear-gradient(135deg, #4CAF50, #2E7D32)';
+                    
+                    setTimeout(() => {
+                        copyBtn.innerHTML = '<i class="far fa-copy"></i> <span>Copy Code</span>';
+                        copyBtn.style.background = 'linear-gradient(135deg, var(--primary-light), var(--primary))';
+                    }, 2000);
+                } catch (err) {
+                    console.error('Failed to copy: ', err);
+                    showError('Failed to copy code');
+                }
+            };
+            
+            // Add holographic effect temporarily
+            resultContainer.classList.add('holographic');
+            setTimeout(() => {
+                resultContainer.classList.remove('holographic');
+            }, 3000);
+            
+        } catch (error) {
+            // Show exact same error message but using futuristic UI
+            showError('❌ Error fetching code. Please try again.');
+            console.error('API Error:', error);
+        }
+    }
+});
+    
+    // Helper function to show processing state
+    function showProcessing() {
+      statusMessage.className = 'status-message processing';
+      statusMessage.innerHTML = `
+        <div class="loading">
+          <i class="fas fa-circle-notch fa-spin"></i>
+          <span class="message-text">Generating secure code</span>
+          <div class="loading-dots">
+            <div class="loading-dot"></div>
+            <div class="loading-dot"></div>
+            <div class="loading-dot"></div>
+          </div>
+        </div>
+      `;
+      statusMessage.style.display = 'flex';
+      resultContainer.style.display = 'none';
+    }
+    
+    // Helper function to show error
+    function showError(message) {
+      statusMessage.className = 'status-message error';
+      statusMessage.innerHTML = `
+        <i class="fas fa-exclamation-circle"></i>
+        <span class="message-text">${message}</span>
+      `;
+      statusMessage.style.display = 'flex';
+      resultContainer.style.display = 'none';
+      
+      // Shake animation for error
+      numberInput.style.animation = 'shake 0.5s';
+      setTimeout(() => {
+        numberInput.style.animation = '';
+      }, 500);
+    }
+    
+    // Simulate API call (replace with actual API call)
+    function simulateApiCall(number) {
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          // Generate a random 6-digit code
+          const code = Math.floor(100000 + Math.random() * 900000);
+          resolve({ data: { code } });
+        }, 2000);
+      });
+    }
+    
+    // Add shake animation dynamically
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        20%, 60% { transform: translateX(-5px); }
+        40%, 80% { transform: translateX(5px); }
+      }
+    `;
+    document.head.appendChild(style);
+  </script>
+</body>
+</html>
